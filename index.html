@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>刘昊东｜作品集 · 景观设计 / 空间研究</title>
-<meta name="description" content="刘昊东，四川农业大学风景园林硕士在读。米兰设计周全国一等奖、中国研究生「美丽中国」创新设计大赛全国二等奖。作品集与研究成果。">
+<title>刘昊东｜作品集 · 景观设计 / 空间研究 / 影像</title>
+<meta name="description" content="刘昊东，四川农业大学风景园林硕士在读。米兰设计周全国一等奖、中国研究生「美丽中国」创新设计大赛全国二等奖。作品集、研究与影像。">
 <meta name="author" content="刘昊东">
 <meta property="og:title" content="刘昊东｜作品集">
 <meta property="og:description" content="风景园林 · 景观设计 / 空间研究 / 游戏体验评估">
@@ -15,12 +15,15 @@
 </head>
 <body>
 
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
 <header class="topbar">
   <a class="brand" href="#top">刘昊东<em>LIU HAODONG</em></a>
-  <nav>
+  <nav id="nav">
     <a href="#works">作品</a>
     <a href="#research">研究</a>
     <a href="#skills">技能</a>
+    <a href="#film">影像</a>
     <a href="#contact">联系</a>
   </nav>
 </header>
@@ -36,10 +39,11 @@
         <p class="sub">四川农业大学 风景园林 硕士在读（2028 届）｜成都</p>
         <div class="hero-actions">
           <a class="btn" href="#works">看作品</a>
+          <a class="btn ghost" href="#film">看影像</a>
           <a class="btn ghost" href="assets/resume.pdf">下载简历</a>
         </div>
       </div>
-      <figure class="hero-portrait">
+      <figure class="hero-portrait" data-parallax>
         <img src="assets/img/portrait.jpg" alt="刘昊东肖像" width="800" height="1064">
       </figure>
     </div>
@@ -59,8 +63,14 @@
 
     <article class="work reveal">
       <div class="work-media">
-        <figure><img src="assets/img/w/huanghe-1.jpg" data-full="assets/img/huanghe-1.jpg" alt="《黄河·安澜时》展板一"></figure>
-        <figure><img src="assets/img/w/huanghe-2.jpg" data-full="assets/img/huanghe-2.jpg" alt="《黄河·安澜时》展板二" loading="lazy"></figure>
+        <figure class="zoom" data-gallery="huanghe" data-full="assets/img/huanghe-1.jpg" data-caption="《黄河·安澜时》展板一 · 总平面与策略">
+          <img src="assets/img/w/huanghe-1.jpg" alt="《黄河·安澜时》展板一" loading="lazy">
+          <figcaption>展板一</figcaption>
+        </figure>
+        <figure class="zoom" data-gallery="huanghe" data-full="assets/img/huanghe-2.jpg" data-caption="《黄河·安澜时》展板二 · 分区与护岸技术">
+          <img src="assets/img/w/huanghe-2.jpg" alt="《黄河·安澜时》展板二" loading="lazy">
+          <figcaption>展板二</figcaption>
+        </figure>
       </div>
       <div class="work-body">
         <p class="work-year">2026 · 景观设计</p>
@@ -76,8 +86,14 @@
 
     <article class="work reveal">
       <div class="work-media">
-        <figure><img src="assets/img/w/hemp-1.jpg" data-full="assets/img/hemp-1.jpg" alt="《麻之三重性》展板一" loading="lazy"></figure>
-        <figure><img src="assets/img/w/hemp-2.jpg" data-full="assets/img/hemp-2.jpg" alt="《麻之三重性》展板二" loading="lazy"></figure>
+        <figure class="zoom" data-gallery="hemp" data-full="assets/img/hemp-1.jpg" data-caption="《麻之三重性》展板一">
+          <img src="assets/img/w/hemp-1.jpg" alt="《麻之三重性》展板一" loading="lazy">
+          <figcaption>展板一</figcaption>
+        </figure>
+        <figure class="zoom" data-gallery="hemp" data-full="assets/img/hemp-2.jpg" data-caption="《麻之三重性》展板二">
+          <img src="assets/img/w/hemp-2.jpg" alt="《麻之三重性》展板二" loading="lazy">
+          <figcaption>展板二</figcaption>
+        </figure>
       </div>
       <div class="work-body">
         <p class="work-year">2025 · 乡村振兴</p>
@@ -92,8 +108,14 @@
 
     <article class="work reveal">
       <div class="work-media">
-        <figure><img src="assets/img/w/seam-1.jpg" data-full="assets/img/seam-1.jpg" alt="《缝山针》展板一" loading="lazy"></figure>
-        <figure><img src="assets/img/w/seam-2.jpg" data-full="assets/img/seam-2.jpg" alt="《缝山针》展板二" loading="lazy"></figure>
+        <figure class="zoom" data-gallery="seam" data-full="assets/img/seam-1.jpg" data-caption="《缝山针》展板一">
+          <img src="assets/img/w/seam-1.jpg" alt="《缝山针》展板一" loading="lazy">
+          <figcaption>展板一</figcaption>
+        </figure>
+        <figure class="zoom" data-gallery="seam" data-full="assets/img/seam-2.jpg" data-caption="《缝山针》展板二">
+          <img src="assets/img/w/seam-2.jpg" alt="《缝山针》展板二" loading="lazy">
+          <figcaption>展板二</figcaption>
+        </figure>
       </div>
       <div class="work-body">
         <p class="work-year">2025 · 棕地修复</p>
@@ -185,9 +207,29 @@
     </div>
   </section>
 
-  <section id="contact" class="section contact">
+  <section id="film" class="section">
     <header class="sec-head">
       <span class="num">04</span>
+      <h2>影像</h2>
+      <p>《云生结海楼》 · 4′33″</p>
+    </header>
+
+    <div class="film reveal" id="filmWrap">
+      <video id="filmVideo" poster="assets/video/poster.jpg" preload="none" playsinline>
+        <source src="assets/video/yunsheng.mp4" type="video/mp4">
+        你的浏览器不支持视频播放。
+      </video>
+      <button class="film-play" id="filmPlay" aria-label="播放影片">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="rgba(15,61,92,.86)"/><path d="M26 20l18 12-18 12z" fill="#f6f3ec"/></svg>
+        <span>播放影片</span>
+      </button>
+    </div>
+    <p class="film-note">《云生结海楼》· 4 分 33 秒。点击封面播放；手机流量建议连 WiFi 观看。</p>
+  </section>
+
+  <section id="contact" class="section contact">
+    <header class="sec-head">
+      <span class="num">05</span>
       <h2>联系</h2>
       <p>简历 · 作品原件 · 实习沟通</p>
     </header>
@@ -205,11 +247,18 @@
   <p>© 2026 刘昊东 · 本站为个人作品集，作品版权归作者与团队所有</p>
 </footer>
 
-<div class="lightbox" id="lightbox" aria-hidden="true">
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="作品图预览">
+  <button class="lb-btn lb-prev" aria-label="上一张">‹</button>
+  <figure class="lb-stage">
+    <img alt="">
+    <figcaption></figcaption>
+  </figure>
+  <button class="lb-btn lb-next" aria-label="下一张">›</button>
   <button class="lb-close" aria-label="关闭">×</button>
-  <img alt="">
+  <span class="lb-count"></span>
 </div>
 
 <script src="assets/js/main.js"></script>
 </body>
 </html>
+
