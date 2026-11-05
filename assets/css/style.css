@@ -1,4 +1,4 @@
-/* ===========================================================
+﻿/* ===========================================================
    刘昊东 · 作品集
    纯静态，无依赖，可直接部署 GitHub Pages
    =========================================================== */
@@ -221,6 +221,42 @@ main{max-width:var(--w);margin:0 auto;padding:0 clamp(20px,5vw,56px)}
 .film.playing .film-play{opacity:0;pointer-events:none}
 .film-note{margin:16px 0 0;font-size:13px;color:var(--muted);line-height:1.9;max-width:70ch}
 
+
+/* ---------- 游戏影像 ---------- */
+.clip-head{
+  margin:44px 0 16px;font-size:13px;letter-spacing:.14em;color:var(--muted);
+  font-weight:500;padding-top:28px;border-top:1px solid var(--line);
+}
+.clip-head em{font-style:normal;font-size:10px;letter-spacing:.26em;margin-left:8px;opacity:.7}
+.clip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(12px,1.8vw,20px)}
+.clip{
+  position:relative;margin:0;overflow:hidden;border:1px solid var(--line);
+  background:#0e0c0a;cursor:pointer;
+}
+.clip img{width:100%;aspect-ratio:16/9;object-fit:cover;height:auto;transition:transform .5s cubic-bezier(.2,.7,.3,1),opacity .3s;opacity:.92}
+.clip:hover img{transform:scale(1.04);opacity:1}
+.clip-play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:46px;height:46px;border-radius:50%;background:rgba(15,61,92,.86);
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;transition:transform .3s,background-color .3s;
+  box-shadow:0 4px 14px rgba(0,0,0,.3);
+}
+.clip-play::after{
+  content:"";width:0;height:0;margin-left:3px;
+  border-left:14px solid #f6f3ec;border-top:9px solid transparent;border-bottom:9px solid transparent;
+}
+.clip:hover .clip-play{transform:translate(-50%,-50%) scale(1.1);background:rgba(15,61,92,.95)}
+.clip-dur{
+  position:absolute;right:8px;top:8px;font-size:11px;letter-spacing:.06em;
+  color:#f6f3ec;background:rgba(14,12,10,.72);padding:2px 7px;border-radius:2px;
+}
+.clip figcaption{
+  position:absolute;left:0;right:0;bottom:0;padding:22px 10px 8px;
+  font-size:12px;color:#f6f3ec;
+  background:linear-gradient(transparent,rgba(14,12,10,.82));
+}
+@media (max-width:700px){ .clip-grid{grid-template-columns:1fr} }
 /* ---------- 联系 ---------- */
 .contact{border-bottom:none}
 .contact-lede{font-family:var(--serif);font-size:clamp(20px,3vw,26px);margin:0 0 26px;line-height:1.7}
@@ -240,6 +276,7 @@ footer{
 }
 .lightbox.on{display:flex}
 .lb-stage{margin:0;display:flex;flex-direction:column;align-items:center;gap:12px;max-height:100%}
+.lb-stage video{max-width:100%;max-height:84vh;background:#000}
 .lb-stage img{
   max-width:100%;max-height:84vh;box-shadow:0 24px 70px rgba(0,0,0,.55);
   animation:lbIn .25s ease;
@@ -304,3 +341,7 @@ footer{
   .work{page-break-inside:avoid}
   .reveal{opacity:1;transform:none}
 }
+
+
+
+

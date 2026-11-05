@@ -1,4 +1,4 @@
-﻿/* 作品集交互：进度条 / 导航高亮 / 滚动出现 / 图片灯箱 / 视频播放 / 首屏视差 */
+/* 作品集交互：进度条 / 导航高亮 / 滚动出现 / 图册灯箱 / 视频弹窗 / 首屏视差 */
 (function () {
   "use strict";
 
@@ -59,19 +59,21 @@
       var r = hero.getBoundingClientRect();
       var x = (e.clientX - r.left) / r.width - 0.5;
       var y = (e.clientY - r.top) / r.height - 0.5;
-      parallax.style.transform = "translate(" + (x * 10).toFixed(1) + "px," +
-        (y * 8).toFixed(1) + "px)";
+      parallax.style.transform = "translate(" + (x * 10).toFixed(1) + "px," + (y * 8).toFixed(1) + "px)";
     });
-    hero.addEventListener("mouseleave", function () {
-      parallax.style.transform = "";
-    });
+    hero.addEventListener("mouseleave", function () { parallax.style.transform = ""; });
   }
 
-  /* ---------- 图片灯箱（可左右切换） ---------- */
+  /* ---------- 灯箱（图片图册 + 视频） ---------- */
   var lb = document.getElementById("lightbox");
-  var lbImg = lb && lb.querySelector("img");
-  var lbCap = lb && lb.querySelector("figcaption");
-  var lbCount = lb && lb.querySelector(".lb-count");
+  if (!lb) return;
+
+  var lbImg = lb.querySelector("img");
+  var lbVideo = lb.querySelector("video");
+  var lbCap = lb.querySelector("figcaption");
+  var lbCount = lb.querySelector(".lb-count");
+  var prevBtn = lb.querySelector(".lb-prev");
+  var nextBtn = lb.querySelector(".lb-next");
 
   var groups = {};
   document.querySelectorAll("[data-gallery]").forEach(function (fig) {
@@ -79,22 +81,45 @@
     (groups[g] = groups[g] || []).push(fig);
   });
 
+  var mode = "image";
   var currentGroup = null, currentIndex = 0;
 
-  function render() {
-    var list = groups[currentGroup] || [];
-    var fig = list[currentIndex];
+  function showImage(group, index) {
+    var list = groups[group] || [];
+    var fig = list[index];
     if (!fig) return;
+    mode = "image";
+    currentGroup = group;
+    currentIndex = index;
+    lbVideo.pause();
+    lbVideo.hidden = true;
+    lbVideo.removeAttribute("src");
+    lbImg.hidden = false;
     lbImg.src = fig.getAttribute("data-full");
     lbImg.alt = fig.getAttribute("data-caption") || "";
     lbCap.textContent = fig.getAttribute("data-caption") || "";
-    lbCount.textContent = (currentIndex + 1) + " / " + list.length;
+    lbCount.textContent = (index + 1) + " / " + list.length;
+    var multi = list.length > 1;
+    prevBtn.hidden = !multi;
+    nextBtn.hidden = !multi;
+    lbCount.hidden = !multi;
   }
 
-  function open(group, index) {
-    currentGroup = group;
-    currentIndex = index;
-    render();
+  function showVideo(src, title) {
+    mode = "video";
+    lbImg.hidden = true;
+    lbImg.removeAttribute("src");
+    lbVideo.hidden = false;
+    lbVideo.src = src;
+    lbVideo.play().catch(function () {});
+    lbCap.textContent = title || "";
+    lbCount.textContent = "";
+    lbCount.hidden = true;
+    prevBtn.hidden = true;
+    nextBtn.hidden = true;
+  }
+
+  function open() {
     lb.classList.add("on");
     lb.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -104,36 +129,43 @@
     lb.classList.remove("on");
     lb.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    lbVideo.pause();
+    lbVideo.removeAttribute("src");
   }
 
   function step(delta) {
+    if (mode !== "image") return;
     var list = groups[currentGroup] || [];
     if (!list.length) return;
-    currentIndex = (currentIndex + delta + list.length) % list.length;
-    render();
+    showImage(currentGroup, (currentIndex + delta + list.length) % list.length);
   }
 
-  if (lb) {
-    Object.keys(groups).forEach(function (g) {
-      groups[g].forEach(function (fig, i) {
-        fig.addEventListener("click", function () { open(g, i); });
-      });
+  Object.keys(groups).forEach(function (g) {
+    groups[g].forEach(function (fig, i) {
+      fig.addEventListener("click", function () { showImage(g, i); open(); });
     });
+  });
 
-    lb.querySelector(".lb-prev").addEventListener("click", function (e) { e.stopPropagation(); step(-1); });
-    lb.querySelector(".lb-next").addEventListener("click", function (e) { e.stopPropagation(); step(1); });
-    lb.querySelector(".lb-close").addEventListener("click", close);
-    lb.addEventListener("click", function (e) { if (e.target === lb) close(); });
-
-    document.addEventListener("keydown", function (e) {
-      if (!lb.classList.contains("on")) return;
-      if (e.key === "Escape") close();
-      if (e.key === "ArrowLeft") step(-1);
-      if (e.key === "ArrowRight") step(1);
+  document.querySelectorAll("[data-video]").forEach(function (card) {
+    card.addEventListener("click", function () {
+      showVideo(card.getAttribute("data-video"), card.getAttribute("data-title"));
+      open();
     });
-  }
+  });
 
-  /* ---------- 影像：点击封面播放 ---------- */
+  prevBtn.addEventListener("click", function (e) { e.stopPropagation(); step(-1); });
+  nextBtn.addEventListener("click", function (e) { e.stopPropagation(); step(1); });
+  lb.querySelector(".lb-close").addEventListener("click", close);
+  lb.addEventListener("click", function (e) { if (e.target === lb) close(); });
+
+  document.addEventListener("keydown", function (e) {
+    if (!lb.classList.contains("on")) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft") step(-1);
+    if (e.key === "ArrowRight") step(1);
+  });
+
+  /* ---------- 主影片封面播放 ---------- */
   var wrap = document.getElementById("filmWrap");
   var video = document.getElementById("filmVideo");
   var playBtn = document.getElementById("filmPlay");
@@ -154,4 +186,3 @@
     });
   }
 })();
-
