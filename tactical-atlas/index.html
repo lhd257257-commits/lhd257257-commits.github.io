@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07100f" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%2307100f'/><path d='M12 16h40v6H12zm0 26h40v6H12zM18 22h8v20h-8zm20 0h8v20h-8z' fill='%23e8b460'/></svg>"
+    />
+    <title>Tactical Atlas · 战术热区</title>
+    <meta
+      name="description"
+      content="基于 PUBG 公开比赛聚合数据的战术圈层与红区可视化原型。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">TA</span>
+          <div>
+            <p class="eyebrow">PUBLIC MATCH DATA / 2018</p>
+            <h1>Tactical Atlas</h1>
+            <p class="brand-cn">战术热区 · 圈层与红区</p>
+          </div>
+        </div>
+        <div class="topbar-meta">
+          <span class="data-pill"><i></i>AGGREGATED · RESEARCH USE</span>
+          <button class="ghost-btn" id="method-btn" type="button">方法与限制</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="panel controls" aria-label="筛选与显示控制">
+          <section class="control-section">
+            <div class="section-heading">
+              <span>01</span>
+              <div>
+                <h2>数据域</h2>
+                <p>MAP DOMAIN</p>
+              </div>
+            </div>
+            <div class="map-switch" role="tablist" aria-label="选择地图">
+              <button type="button" data-map="ERANGEL" class="is-active" role="tab">
+                <strong>ERANGEL</strong>
+                <small>北部数据域</small>
+              </button>
+              <button type="button" data-map="MIRAMAR" role="tab">
+                <strong>MIRAMAR</strong>
+                <small>沙海数据域</small>
+              </button>
+            </div>
+          </section>
+
+          <section class="control-section">
+            <div class="section-heading">
+              <span>02</span>
+              <div>
+                <h2>图层</h2>
+                <p>LAYER</p>
+              </div>
+            </div>
+            <div class="layer-list" role="tablist" aria-label="选择图层">
+              <button type="button" data-layer="death" role="tab">
+                <span class="layer-dot dot-death"></span>
+                <span><strong>死亡热区</strong><small>DEATH HEAT</small></span>
+                <em data-count="death">—</em>
+              </button>
+              <button type="button" data-layer="first" class="is-active" role="tab">
+                <span class="layer-dot dot-amber"></span>
+                <span><strong>首圈中心</strong><small>FIRST CIRCLE</small></span>
+                <em data-count="first">—</em>
+              </button>
+              <button type="button" data-layer="last" role="tab">
+                <span class="layer-dot dot-red"></span>
+                <span><strong>决赛圈</strong><small>FINAL CIRCLE</small></span>
+                <em data-count="last">—</em>
+              </button>
+              <button type="button" data-layer="red" role="tab">
+                <span class="layer-dot dot-orange"></span>
+                <span><strong>红区</strong><small>RED ZONE</small></span>
+                <em data-count="red">—</em>
+              </button>
+            </div>
+            <div class="death-filters" id="death-controls" hidden>
+              <div class="mini-label">时间段 <span>PHASE</span></div>
+              <div class="phase-chips" role="group" aria-label="死亡时间段">
+                <button type="button" data-phase="all" class="is-active">全部</button>
+                <button type="button" data-phase="early">0–3′</button>
+                <button type="button" data-phase="earlyMid">3–10′</button>
+                <button type="button" data-phase="mid">10–20′</button>
+                <button type="button" data-phase="late">20–30′</button>
+                <button type="button" data-phase="final">30′+</button>
+              </div>
+              <label class="cause-row" for="cause-select">
+                <span>死因 <small>CAUSE</small></span>
+                <select id="cause-select">
+                  <option value="all">全部死因</option>
+                  <option value="rifle">步枪</option>
+                  <option value="sniper">狙击</option>
+                  <option value="shotgun">霰弹/近战</option>
+                  <option value="vehicle">载具</option>
+                  <option value="zone">毒圈/环境</option>
+                  <option value="other">其他</option>
+                </select>
+              </label>
+              <p class="death-status" id="death-status">首次点击“死亡热区”会加载 65M 条明细的聚合结果。</p>
+            </div>
+          </section>
+
+          <section class="control-section">
+            <div class="section-heading">
+              <span>03</span>
+              <div>
+                <h2>显示</h2>
+                <p>DISPLAY</p>
+              </div>
+            </div>
+            <div class="segmented" role="group" aria-label="显示模式">
+              <button type="button" data-view="heat" class="is-active">热力</button>
+              <button type="button" data-view="points">点阵</button>
+              <button type="button" data-view="both">叠加</button>
+            </div>
+            <label class="range-row" for="radius">
+              <span>热区半径</span>
+              <strong id="radius-value">34</strong>
+              <input id="radius" type="range" min="14" max="80" value="34" step="2" />
+            </label>
+            <label class="toggle-row" for="show-sectors">
+              <span>显示分区编号</span>
+              <input id="show-sectors" type="checkbox" checked />
+              <i></i>
+            </label>
+          </section>
+
+          <div class="legend">
+            <div class="legend-head"><span>强度</span><span>SQRT WEIGHTED</span></div>
+            <div class="legend-bar"></div>
+            <div class="legend-scale"><span>LOW</span><span>HIGH</span></div>
+          </div>
+
+          <div class="control-actions">
+            <button type="button" id="export-btn" class="primary-btn">导出当前视图 PNG</button>
+            <button type="button" id="reset-btn" class="ghost-btn">重置视图</button>
+          </div>
+        </aside>
+
+        <section class="map-stage" aria-label="战术热区地图">
+          <div class="map-head">
+            <div>
+              <p class="eyebrow" id="map-eyebrow">ERANGEL / DATA DOMAIN</p>
+              <h2 id="map-title">ERANGEL <span>北部数据域</span></h2>
+            </div>
+            <div class="map-readout">
+              <span id="coordinate">X — / Y —</span>
+              <small id="hover-label">移动指针查看单元计数</small>
+            </div>
+          </div>
+
+          <div class="map-frame" id="map-frame">
+            <canvas id="map-canvas" width="1000" height="1000" aria-label="PUBG 公开比赛数据战术热区"></canvas>
+            <div class="map-scanline" aria-hidden="true"></div>
+            <div class="map-corner tl"></div>
+            <div class="map-corner tr"></div>
+            <div class="map-corner bl"></div>
+            <div class="map-corner br"></div>
+            <div class="map-compass" aria-hidden="true">
+              <span>N</span>
+              <i></i>
+            </div>
+            <div class="map-scale" aria-hidden="true"><span></span><small>200 units</small></div>
+            <div class="tooltip" id="tooltip" hidden>
+              <small id="tip-sector">SECTOR —</small>
+              <strong id="tip-count">—</strong>
+              <span id="tip-coord">X — / Y —</span>
+            </div>
+            <div class="map-stamp">SCHEMATIC MAP · NOT OFFICIAL</div>
+          </div>
+
+          <div class="map-caption">
+            <span><i class="live-dot"></i> 聚合计数，不代表实时对局</span>
+            <span>坐标空间 0—1000 · 非官方地图示意</span>
+          </div>
+        </section>
+
+        <aside class="panel insights" aria-label="读数与战术解读">
+          <section>
+            <div class="section-heading">
+              <span>04</span>
+              <div>
+                <h2>当前读数</h2>
+                <p>READOUT</p>
+              </div>
+            </div>
+            <div class="stat-grid">
+              <div class="stat">
+                <span>聚合单元</span>
+                <strong id="stat-cells">—</strong>
+                <small>CELLS</small>
+              </div>
+              <div class="stat">
+                <span>权重总量</span>
+                <strong id="stat-weight">—</strong>
+                <small>WEIGHT</small>
+              </div>
+              <div class="stat">
+                <span>单格峰值</span>
+                <strong id="stat-max">—</strong>
+                <small>MAX CELL</small>
+              </div>
+              <div class="stat">
+                <span>最热分区</span>
+                <strong id="stat-sector">—</strong>
+                <small>SECTOR</small>
+              </div>
+            </div>
+          </section>
+
+          <section class="hot-section">
+            <div class="section-title-row">
+              <h3>热点扇区</h3>
+              <span>TOP 5 / 10×10</span>
+            </div>
+            <ol id="hot-list" class="hot-list"></ol>
+          </section>
+
+          <section class="insight-section">
+            <div class="section-title-row">
+              <h3>战术解读</h3>
+              <span id="insight-tag">AUTO</span>
+            </div>
+            <p id="insight-text" class="insight-text">载入数据中…</p>
+            <div class="insight-callout">
+              <span>读图提示</span>
+              <p id="insight-note">热区是聚合计数，不是因果结论。</p>
+            </div>
+          </section>
+
+          <section class="source-section">
+            <div class="section-title-row">
+              <h3>数据边界</h3>
+              <span>DATA NOTE</span>
+            </div>
+            <p>2018 年公开比赛聚合快照；样本以低分段玩家为种子抓取，不能代表当前版本或全部玩家。</p>
+            <button type="button" id="method-link" class="text-btn">查看来源与限制 →</button>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="bottombar">
+        <span><b>TACTICAL ATLAS</b> / 研究原型</span>
+        <span>Data: Kaggle PUBG Match Deaths (CC0) · death CSV + aggregate SQL</span>
+        <span>UI / map schematic: original</span>
+      </footer>
+    </div>
+
+    <dialog id="method-dialog" class="method-dialog">
+      <form method="dialog">
+        <button class="dialog-close" aria-label="关闭">×</button>
+        <p class="eyebrow">METHOD / ATTRIBUTION / LIMITS</p>
+        <h2>这不是官方地图，也不是实时数据</h2>
+        <p>
+          本页把公开比赛数据中的<strong>首圈中心、决赛圈、红区</strong>落点聚合到 0—1000
+          的坐标空间，用日志强度的热区显示集中程度。底图为原创示意地图，只保留坐标、网格与分区，不使用 PUBG 官方地图、Logo 或音乐。
+        </p>
+        <h3>数据来源</h3>
+        <ul>
+          <li>Kaggle: <a href="https://www.kaggle.com/datasets/skihikingkevin/pubg-match-deaths" target="_blank" rel="noreferrer">PUBG Match Deaths and Statistics</a>（页面标注 CC0）</li>
+          <li>聚合 SQL 快照：<a href="https://github.com/zcyoop/pubg_data_analysis" target="_blank" rel="noreferrer">zcyoop/pubg_data_analysis</a>（仅使用数值聚合）</li>
+          <li>参考仓库：<a href="https://github.com/KaiserW/pubg-data" target="_blank" rel="noreferrer">KaiserW/pubg-data</a></li>
+        </ul>
+        <h3>限制</h3>
+        <ul>
+          <li>圈层/红区来自聚合 SQL 快照；死亡热区来自 6500 万条死亡明细的 100×100 网格聚合。</li>
+          <li>2018 年数据，不代表当前版本；样本存在低分段种子偏差。</li>
+          <li>聚合单元与“人数/场次”的确切口径未完全可核验，页面只标为“权重”，不把它解释为绝对玩家数。</li>
+          <li>热区显示相关性，不构成因果结论；不能替代比赛复盘。</li>
+          <li>仓库无 LICENSE；本项目为本地研究/教学原型，公开发布或商用前需解决授权与商标问题。</li>
+        </ul>
+        <div class="dialog-actions">
+          <a class="primary-btn" href="https://www.kaggle.com/datasets/skihikingkevin/pubg-match-deaths" target="_blank" rel="noreferrer">打开 Kaggle 数据页</a>
+          <button class="ghost-btn" value="close">关闭</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
